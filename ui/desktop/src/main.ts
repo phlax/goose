@@ -53,6 +53,9 @@ import * as mesh from './mesh';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { BLOCKED_PROTOCOLS, WEB_PROTOCOLS } from './utils/urlSecurity';
 import { buildCSP } from './utils/csp';
+import { applyInstanceAppId, instanceLabel, instanceWindowTitle } from './instanceIdentity';
+
+applyInstanceAppId();
 
 function shouldSetupUpdater(): boolean {
   // Setup updater if either the flag is enabled OR dev updates are enabled
@@ -864,6 +867,7 @@ const createChat = async (app: App, options: CreateChatOptions = {}) => {
   });
 
   const mainWindow = new BrowserWindow({
+    title: instanceWindowTitle(),
     titleBarStyle: process.platform === 'darwin' ? 'hidden' : 'default',
     trafficLightPosition: process.platform === 'darwin' ? { x: 20, y: 16 } : undefined,
     vibrancy: process.platform === 'darwin' ? 'window' : undefined,
@@ -1217,6 +1221,7 @@ const createLauncher = () => {
   }
 
   const launcherWindow = new BrowserWindow({
+    title: instanceWindowTitle(),
     width: 600,
     height: 80,
     frame: false,
@@ -2665,7 +2670,9 @@ async function appMain() {
       }
 
       const appWindow = new BrowserWindow({
-        title: formatAppName(gooseApp.name),
+        title: instanceWindowTitle()
+          ? `${formatAppName(gooseApp.name)} — ${instanceLabel}`
+          : formatAppName(gooseApp.name),
         width: gooseApp.width ?? 800,
         height: gooseApp.height ?? 600,
         resizable: gooseApp.resizable ?? true,
