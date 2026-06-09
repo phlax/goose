@@ -90,6 +90,36 @@ The built application will be available in:
 Use the existing Windows build process as documented.
 
 
+# Running multiple instances side-by-side (Linux/Windows)
+
+Goose supports two opt-in environment variables to make multiple concurrent
+instances distinguishable. Both default to current behaviour when unset.
+
+| Variable | Purpose |
+|---|---|
+| `GOOSE_APP_ID` | Sets the Electron app name. On Wayland this becomes the `xdg_toplevel.app_id`; on Windows the AppUserModelID. Combine with isolated `XDG_*` dirs / `GOOSE_CONFIG_DIR` for fully independent instances. Allowed characters: `A-Z a-z 0-9 . _ -`, max 64. |
+| `GOOSE_INSTANCE_LABEL` | Appended to every window title as `Goose — <label>`. Max 64 chars, control characters stripped. |
+
+Example launching a "work" profile that is fully isolated and visible to the
+compositor as a separate app:
+
+```bash
+GOOSE_APP_ID=goose-work \
+GOOSE_INSTANCE_LABEL=Work \
+XDG_CONFIG_HOME=~/.local/share/goose-work/config \
+XDG_DATA_HOME=~/.local/share/goose-work/data \
+XDG_STATE_HOME=~/.local/share/goose-work/state \
+XDG_CACHE_HOME=~/.local/share/goose-work/cache \
+GOOSE_CONFIG_DIR=~/.local/share/goose-work/config/goose \
+  goose
+```
+
+The companion [`geese`](https://github.com/phlax/geese) launcher does this
+automatically per profile.
+
+> **Note:** This is a fork-local change intended for use with
+> [`phlax/geese`](https://github.com/phlax/geese), not intended for upstreaming as-is.
+
 # Running with goosed server from source
 
 Set `VITE_START_EMBEDDED_SERVER=yes` to no in `.env`.
