@@ -2670,7 +2670,7 @@ async function appMain() {
       }
 
       const appWindow = new BrowserWindow({
-        title: instanceWindowTitle()
+        title: instanceLabel
           ? `${formatAppName(gooseApp.name)} — ${instanceLabel}`
           : formatAppName(gooseApp.name),
         width: gooseApp.width ?? 800,
